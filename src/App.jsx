@@ -2,13 +2,13 @@ import './App.css'
 
 
 
-import React, {useState} from 'react';
-import {Map} from 'react-map-gl';
+import React, { useState } from 'react';
+import { Map } from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
-import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
-import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
-import {scaleThreshold} from 'd3-scale';
+import { GeoJsonLayer, PolygonLayer } from '@deck.gl/layers';
+import { LightingEffect, AmbientLight, _SunLight as SunLight } from '@deck.gl/core';
+import { scaleThreshold } from 'd3-scale';
 
 // Source data GeoJSON
 const DATA_URL =
@@ -66,9 +66,9 @@ const landCover = [
 ];
 
 
- function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
+function App({ data = DATA_URL, mapStyle = MAP_STYLE }) {
   const [effects] = useState(() => {
-    const lightingEffect = new LightingEffect({ambientLight, dirLight});
+    const lightingEffect = new LightingEffect({ ambientLight, dirLight });
     lightingEffect.shadowColor = [0, 0, 0, 0.5];
     return [lightingEffect];
   });
@@ -98,15 +98,21 @@ const landCover = [
   ];
 
   return (
-    <DeckGL
-      layers={layers}
-      effects={effects}
-      initialViewState={INITIAL_VIEW_STATE}
-      controller={true}
-    
-    >
-      <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
-    </DeckGL>
+    <div>
+      <div style={{zIndex:"30", position: "absolute", top: "1rem", left: "1rem", width: "10rem"}}>
+        <input />
+      </div>
+
+      <DeckGL
+        layers={layers}
+        effects={effects}
+        initialViewState={INITIAL_VIEW_STATE}
+        controller={true}
+
+      >
+        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
+      </DeckGL>
+    </div>
   );
 }
 
