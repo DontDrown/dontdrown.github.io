@@ -99,7 +99,7 @@ function App({ data = DATA_URL, mapStyle = MAP_STYLE }) {
 
   return (
     <div>
-      <div style={{zIndex:"30", position: "absolute", top: "1rem", left: "1rem", width: "10rem"}}>
+      <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem" }}>
         <input />
       </div>
 
