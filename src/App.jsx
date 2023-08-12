@@ -42,11 +42,13 @@ const landCover = [
 
 
  function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
+  
   const [effects] = useState(() => {
     const lightingEffect = new LightingEffect({ambientLight, dirLight});
     lightingEffect.shadowColor = [0, 0, 0, 0.5];
     return [lightingEffect];
   });
+
   const [viewState,setViewState] = useState({
     latitude: -36.8509,
     longitude: 174.7645,
@@ -56,11 +58,11 @@ const landCover = [
     bearing: 0
   });
 
-  const goToPoint = useCallback((e) => {
-    console.log(e)
+  const goToPoint = useCallback((lat,lon) => {
+    console.log("lat " + lat + " lon " +lon)
     setViewState({...viewState,
-      longitude: e.coords.longitude,
-      latitude: e.coords.latitude,
+      longitude: lon,
+      latitude: lat,
       zoom: 16,
       transitionInterpolator: new FlyToInterpolator({speed:0.1})
     })
@@ -68,7 +70,7 @@ const landCover = [
 
   const goToUserLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(goToPoint);
+      navigator.geolocation.getCurrentPosition((e)=>{goToPoint(e.coords.latitude,e.coords.longitude)});
     }
   }
 
@@ -108,7 +110,7 @@ const landCover = [
 
         <div> GEObutton</div>
 
-        <Search />
+        <Search goToPoint = {goToPoint}/>
 
         <button onClick={goToUserLocation}>Find me!</button>
       
