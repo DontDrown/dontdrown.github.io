@@ -25,6 +25,8 @@ const AUTOCOMPLETE_API_ACCESS_TOKEN = "8fb3d500fc324fb8b14685bde781a1ef";
 function Search()
 {
   const [value, setValue] = useState();
+  const [searchValue, setSearchValue] = useState();
+
   const [entries, setEntries] = useState([]);
 
   const debouncedRequest = useDebounce(() => 
@@ -38,6 +40,8 @@ function Search()
       .then((res) => res.json())
       .then((data) =>
       {
+        console.log(data.results);
+
         // Handle auto complete results
         if(data === null || data.results === null)
           setEntries([]);
@@ -50,19 +54,29 @@ function Search()
   {
     const value = event.target.value;
     setValue(value);
+    setSearchValue(value);
 
     debouncedRequest();
+  };
+
+  const autocompleteClickHandler = (entry) =>
+  {
+    var lon = entry.lon1;
+    var lat = entry.lan1;
+
+    // Update search box
+    setSearchValue(entry.address_line1 + ", " + entry.address_line2);
   };
 
   return (
         <div>
             <div>
-                <input placeholder='Enter Your Address' onChange={inputChangeHandler}/>
+                <input placeholder='Enter Your Address' onChange={inputChangeHandler} value={searchValue}/>
             </div>
 
             {entries.map(entry =>
             (
-                <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry">
+                <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry" onClick={() => autocompleteClickHandler(entry)}>
                     {entry.address_line1 + ", " + entry.address_line2}
                 </div>
             )
