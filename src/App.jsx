@@ -4,8 +4,10 @@ import './App.css'
 
 import React, {useState} from 'react';
 import {Map} from 'react-map-gl';
+
 import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
+import { GeolocateControl } from 'react-map-gl';
 import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import {scaleThreshold} from 'd3-scale';
@@ -105,7 +107,10 @@ const landCover = [
       controller={true}
     
     >
-      <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
+      <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true}>
+      <GeolocateControl trackUserLocation={true} showUserHeading = {true} showUserLocation ={true} showAccuracyCircle={true}/>
+      </Map>
+      
     </DeckGL>
   );
 }
