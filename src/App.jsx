@@ -8,7 +8,6 @@ import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
-import getTooltip from './getToolTip';
 
 // Source data GeoJSON
 const DATA_URL =
@@ -40,9 +39,7 @@ const landCover = [
   ]
 ];
 
-
- function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
-  
+function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [effects] = useState(() => {
     const lightingEffect = new LightingEffect({ambientLight, dirLight});
     lightingEffect.shadowColor = [0, 0, 0, 0.5];
@@ -98,10 +95,17 @@ const landCover = [
     })
   ];
 
+  console.log(geojsonData);
 
-
-
-  
+  function getTooltip(lat, long) 
+  {
+    // Tooltip needs to be returned in form of html property of object
+    return (
+      {
+        html: '<p> Latitude ' + lat + ' Longitude ' + long + '</p>'
+      }
+    );
+  }
   
 
   return (
@@ -131,7 +135,7 @@ const landCover = [
         effects={effects}
         initialViewState={viewState}
         controller={true}
-        getTooltip = {getTooltip}
+        getTooltip = {() => getTooltip(viewState.latitude, viewState.longitude)}
 
       >
         
