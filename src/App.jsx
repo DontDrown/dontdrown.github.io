@@ -118,6 +118,26 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
 
   function getTooltip() 
   {
+    function inside(point, vs) 
+    {
+      // ray-casting algorithm based on
+      // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
+      
+      var x = point[0], y = point[1];
+      
+      var inside = false;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+          var xi = vs[i][0], yi = vs[i][1];
+          var xj = vs[j][0], yj = vs[j][1];
+          
+          var intersect = ((yi > y) != (yj > y))
+              && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+          if (intersect) inside = !inside;
+      }
+      
+      return inside;
+    };
+  
     if(geojsonData === null || geojsonData.length == 0)
     {
       return (
@@ -149,14 +169,15 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         if(coordinates[0][0] === null)
         continue;
 
-        const coordLat = coordinates[0][0][0];
-        const coordLong = coordinates[0][0][1];
+        const coordLat = coordinates[0][0][1];
+        const coordLong = coordinates[0][0][0];
 
         const dLat = (currentLatitude - coordLat);
         const dLong = (currentLongitude - coordLong);
 
         const distance = Math.sqrt((dLat * dLat) + (dLong * dLong));
 
+        // Get closest flood plain by distance.
         if(distance < closestDistance)
         {
           closest = entry;
@@ -164,7 +185,11 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         }
       }  
 
-      if(closest === null)
+      if(closest === null || 
+        closest.geometry === null || 
+        closest.geometry.coordinates === null || 
+        closest.geometry.coordinates[0] === null || 
+        closest.geometry.coordinates[0].length == 0)
       {
         return (
           {
@@ -174,14 +199,29 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       }
       else
       {
-        console.log("Closest " + JSON.stringify(closest));
+        // Check if within flood plain bounds.
+        var geometry = closest.geometry;  
+        var coordinates = geometry.coordinates[0];
 
-        // Tooltip needs to be returned in form of html property of object
-        return (
-          {
-            html: '<p> Distance: ' + closestDistance + ' Closest flood plain ' + closest.properties.DOCUMENT_NAME + '</p>'
-          }
-        );
+        var inside = inside([currentLongitude, currentLatitude], coordinates);
+
+        if(inside)
+        {
+          return (
+            {
+              html: '<p>You are within a flood plain! <br>Closest flood plain: ' + closest.properties.DOCUMENT_NAME + '</p>'
+            }
+          );
+        }
+        else
+        {
+          // Tooltip needs to be returned in form of html property of object
+          return (
+            {
+              html: "<p> You are near a flood plain. <br>You are Lat-Long distance: " + closestDistance + ' <br>Closest flood plain: ' + closest.properties.DOCUMENT_NAME + '</p>'
+            }
+          );
+        }
       }
     }
   }
