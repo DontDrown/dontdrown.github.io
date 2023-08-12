@@ -1,5 +1,5 @@
 import './App.css'
-import React, {useState} from 'react';
+import React, {useState,useCallback} from 'react';
 import {Map} from 'react-map-gl';
 
 import maplibregl from 'maplibre-gl';
@@ -7,6 +7,7 @@ import DeckGL from '@deck.gl/react';
 import { GeolocateControl } from 'react-map-gl';
 import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
+import { FlyToInterpolator } from 'deck.gl';
 
 
 // Source data GeoJSON
@@ -14,14 +15,7 @@ const DATA_URL =
   './Flood_Plains.json'; // eslint-disable-line
 
 
-const INITIAL_VIEW_STATE = {
-  latitude: -36.8509,
-  longitude: 174.7645,
-  zoom: 11,
-  maxZoom: 16,
-  pitch: 45,
-  bearing: 0
-};
+
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
 
@@ -53,6 +47,30 @@ const landCover = [
     lightingEffect.shadowColor = [0, 0, 0, 0.5];
     return [lightingEffect];
   });
+  const [viewState,setViewState] = useState({
+    latitude: -36.8509,
+    longitude: 174.7645,
+    zoom: 11,
+    maxZoom: 16,
+    pitch: 45,
+    bearing: 0
+  });
+
+  const goToPoint = useCallback((e) => {
+    console.log(e)
+    setViewState({...viewState,
+      longitude: e.coords.longitude,
+      latitude: e.coords.latitude,
+      zoom: 16,
+      transitionInterpolator: new FlyToInterpolator({speed:0.1})
+    })
+  }, []);
+
+  const goToUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(goToPoint);
+    }
+  }
 
   const layers = [
     // only needed when using shadows - a plane for shadows to drop on
@@ -78,6 +96,8 @@ const landCover = [
     })
   ];
 
+  
+
   return (
     <div>
       <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem", display: 'flex' }}>
@@ -86,6 +106,8 @@ const landCover = [
         <div>
           <input placeholder='Enter Your Address' />
         </div>
+        <button onClick={goToUserLocation}>Find me!</button>
+      
         <div class="dropdown">
           <button onclick="myFunction()" class="dropbtn">Dropdown</button>
           <div id="myDropdown" class="dropdown-content">
@@ -101,7 +123,7 @@ const landCover = [
       <DeckGL
         layers={layers}
         effects={effects}
-        initialViewState={INITIAL_VIEW_STATE}
+        initialViewState={viewState}
         controller={true}
 
       >
