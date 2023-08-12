@@ -20,9 +20,10 @@ const useDebounce = (callback) => {
     return debouncedCallback;
   };
 
+
 const AUTOCOMPLETE_API_ACCESS_TOKEN = "8fb3d500fc324fb8b14685bde781a1ef";
 
-function Search()
+const Search = ({ goToPoint }) =>
 {
   const [value, setValue] = useState();
   const [searchValue, setSearchValue] = useState();
@@ -73,14 +74,16 @@ function Search()
 
   const autocompleteClickHandler = (entry) =>
   {
-    var lon = entry.lon1;
-    var lat = entry.lan1;
-
+    let lon = entry.lon;
+    let lat = entry.lat;
+    console.log(entry)
+    console.log(lat)
     // Update search box
     setSearchValue(entry.address_line1 + ", " + entry.address_line2);
 
     // Clear autocomplete entries
     setEntries([]);
+    goToPoint(lat,lon);
   };
 
   return (
