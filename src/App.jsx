@@ -8,6 +8,7 @@ import { GeolocateControl } from 'react-map-gl';
 import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 
+
 // Source data GeoJSON
 const DATA_URL =
   './Flood_Plains.json'; // eslint-disable-line
@@ -78,17 +79,35 @@ const landCover = [
   ];
 
   return (
-    <DeckGL
-      layers={layers}
-      effects={effects}
-      initialViewState={INITIAL_VIEW_STATE}
-      controller={true}>
-    
-      <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true}>
-        <GeolocateControl onGeolocate = {(e)=>{console.log(e)}} trackUserLocation={true} showUserHeading = {true} showUserLocation ={true} showAccuracyCircle={true}/>
-      </Map>
-      
-    </DeckGL>
+    <div>
+      <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem", display: 'flex' }}>
+
+        <div> GEObutton</div>
+        <div>
+          <input placeholder='Enter Your Address' />
+        </div>
+        <div class="dropdown">
+          <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+          <div id="myDropdown" class="dropdown-content">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+        </div>
+
+      </div>
+
+
+      <DeckGL
+        layers={layers}
+        effects={effects}
+        initialViewState={INITIAL_VIEW_STATE}
+        controller={true}
+
+      >
+        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
+      </DeckGL>
+    </div>
   );
 }
 
