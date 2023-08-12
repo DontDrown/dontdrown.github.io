@@ -48,6 +48,9 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     return [lightingEffect];
   });
 
+  const [currentLongitude, setCurrentLongitude] = useState();
+  const [currentLatitude, setCurrentLatitude] = useState();
+
   const [viewState,setViewState] = useState({
     latitude: -36.8509,
     longitude: 174.7645,
@@ -65,6 +68,8 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       zoom: 16,
       transitionInterpolator: new FlyToInterpolator({speed:0.1})
     })
+    setCurrentLongitude(lon);
+    setCurrentLatitude(lat);
   }, []);
 
   const goToUserLocation = () => {
@@ -109,7 +114,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     setGeojsonData(json);
   });
 
-  function getTooltip(lat, long) 
+  function getTooltip() 
   {
     if(geojsonData === null || geojsonData.length == 0)
     {
@@ -145,8 +150,8 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         const coordLat = coordinates[0][0][0];
         const coordLong = coordinates[0][0][1];
 
-        const dLat = (lat - coordLat);
-        const dLong = (long - coordLong);
+        const dLat = (currentLatitude - coordLat);
+        const dLong = (currentLongitude - coordLong);
 
         const distance = Math.sqrt((dLat * dLat) + (dLong * dLong));
 
@@ -167,12 +172,12 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       }
       else
       {
-        //console.log("Closest " + JSON.stringify(closest));
+        console.log("Closest " + JSON.stringify(closest));
 
         // Tooltip needs to be returned in form of html property of object
         return (
           {
-            html: '<p> Closest flood plain ' + closest.properties.DOCUMENT_NAME + '</p>'
+            html: '<p> Distance: ' + closestDistance + ' Closest flood plain ' + closest.properties.DOCUMENT_NAME + '</p>'
           }
         );
       }
@@ -208,7 +213,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         effects={effects}
         initialViewState={viewState}
         controller={true}
-        getTooltip = {() => getTooltip(viewState.latitude, viewState.longitude)}
+        getTooltip = {() => getTooltip()}
 
       >
         
