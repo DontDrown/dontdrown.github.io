@@ -10,6 +10,7 @@ import { GeoJsonLayer, PolygonLayer } from '@deck.gl/layers';
 import { LightingEffect, AmbientLight, _SunLight as SunLight } from '@deck.gl/core';
 import { scaleThreshold } from 'd3-scale';
 
+
 // Source data GeoJSON
 const DATA_URL =
   './Flood_Plains.json'; // eslint-disable-line
@@ -99,9 +100,23 @@ function App({ data = DATA_URL, mapStyle = MAP_STYLE }) {
 
   return (
     <div>
-      <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem" }}>
-        <input />
+      <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem", display: 'flex' }}>
+
+        <div> GEObutton</div>
+        <div>
+          <input placeholder='Enter Your Address' />
+        </div>
+        <div class="dropdown">
+          <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+          <div id="myDropdown" class="dropdown-content">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+          </div>
+        </div>
+
       </div>
+
 
       <DeckGL
         layers={layers}
