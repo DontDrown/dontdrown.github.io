@@ -4,11 +4,11 @@ import {Map} from 'react-map-gl';
 
 import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
-import { GeolocateControl } from 'react-map-gl';
 import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
+import getTooltip from './getToolTip';
 
 // Source data GeoJSON
 const DATA_URL =
@@ -96,6 +96,10 @@ const landCover = [
     })
   ];
 
+
+
+
+  
   
 
   return (
@@ -125,8 +129,10 @@ const landCover = [
         effects={effects}
         initialViewState={viewState}
         controller={true}
+        getTooltip = {getTooltip}
 
       >
+        
         <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
       </DeckGL>
     </div>
