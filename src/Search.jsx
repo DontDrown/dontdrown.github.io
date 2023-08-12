@@ -98,19 +98,23 @@ const Search = ({ goToPoint }) =>
   };
 
   return (
-        <div>
-            <div>
+        <div className='searchBarBody'>
+            <div className='searchBar'>
                 <input placeholder='Enter Your Address' onChange={inputChangeHandler} value={searchValue}/>
             </div>
 
-            {
-            entries?.map(entry =>
-            (
-                <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry" onClick={() => autocompleteClickHandler(entry)}>
-                    {entry.address_line1 + ", " + entry.address_line2}
-                </div>
-            ))
-            }
+            <div className='searchResults'>
+              {
+                entries?.map(entry =>
+                (
+                
+                      <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry" onClick={() => autocompleteClickHandler(entry)}>
+                        {entry.address_line1 + ", " + entry.address_line2}
+                      </div>
+                   
+                ))
+              }
+            </div>
         </div>
     );
 }

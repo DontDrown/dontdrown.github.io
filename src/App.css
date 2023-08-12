@@ -94,6 +94,18 @@
   top: 1rem;
   left: 1rem;
   z-index: 100;
+  background-color: rgba(211,211,211,0.8);
+  padding: 10px;
+  height: 60px;
+  border-radius: 5px;
+  justify-content: center;
+ 
+}
+
+.locateButton {
+  padding: 2px 10px;
+  margin-left: 5px;
+
 }
 
 
