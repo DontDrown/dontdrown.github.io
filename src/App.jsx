@@ -8,6 +8,8 @@ import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
+import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // Source data GeoJSON
 const DATA_URL =
@@ -109,25 +111,26 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   
 
   return (
-    <div>
-      <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem", display: 'flex' }}>
-
-        <div> GEObutton</div>
-
-        <Search goToPoint = {goToPoint}/>
-
-        <button onClick={goToUserLocation}>Find me!</button>
-      
+    <>
+      <div className ='searchBarContainer'>
         <div class="dropdown">
-          <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-          <div id="myDropdown" class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
+          <button class="btn btn-secondary dropdown-toggle BtnGray" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
         </div>
-
+        <Search goToPoint = {goToPoint}/>
+        <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
       </div>
+
+        
+      
+       
+
+     
+
 
 
       <DeckGL
@@ -139,9 +142,9 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
 
       >
         
-        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
+        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false}/>
       </DeckGL>
-    </div>
+    </>
   );
 }
 

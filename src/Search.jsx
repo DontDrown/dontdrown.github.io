@@ -47,7 +47,22 @@ const Search = ({ goToPoint }) =>
         if(data === null || data.results === null)
           setEntries([]);
         else
-          setEntries(data.results);
+        {
+          // Only allow auckland results
+          var aucklandResults = [];
+
+          data.results.forEach((result, index) =>
+          {
+            if(result.city.toUpperCase() === 'AUCKLAND')
+                aucklandResults.push(result);
+          });
+
+          setEntries(aucklandResults);
+        }
+      })
+      .catch((err) =>
+      {
+        setEntries([]);
       });
   });
 
@@ -55,9 +70,17 @@ const Search = ({ goToPoint }) =>
   {
     const value = event.target.value;
     setValue(value);
-    setSearchValue(value);
 
-    debouncedRequest();
+    if(value === null || value.length == 0)
+    {
+        setSearchValue("");
+        setEntries([]);
+    }
+    else
+    {
+        setSearchValue(value);
+        debouncedRequest();
+    }
   };
 
   const autocompleteClickHandler = (entry) =>
@@ -68,22 +91,30 @@ const Search = ({ goToPoint }) =>
     console.log(lat)
     // Update search box
     setSearchValue(entry.address_line1 + ", " + entry.address_line2);
+
+    // Clear autocomplete entries
+    setEntries([]);
     goToPoint(lat,lon);
   };
 
   return (
-        <div>
-            <div>
+        <div className='searchBarBody'>
+            <div className='searchBar'>
                 <input placeholder='Enter Your Address' onChange={inputChangeHandler} value={searchValue}/>
             </div>
 
-            {entries.map(entry =>
-            (
-                <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry" onClick={() => autocompleteClickHandler(entry)}>
-                    {entry.address_line1 + ", " + entry.address_line2}
-                </div>
-            )
-            )}
+            <div className='searchResults'>
+              {
+                entries?.map(entry =>
+                (
+                
+                      <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry" onClick={() => autocompleteClickHandler(entry)}>
+                        {entry.address_line1 + ", " + entry.address_line2}
+                      </div>
+                   
+                ))
+              }
+            </div>
         </div>
     );
 }

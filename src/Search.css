@@ -1,5 +1,33 @@
 .autocomplete-entry
 {
-  background-color: black;
+  background-color: white;
   border: solid 3px white;
+
 }
+
+.autocomplete-entry:hover {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+
+}
+
+
+.searchBarBody {
+  width: 200px;
+  margin: 0px;
+  padding: 10px 0px;
+}
+.searchBarBody input {
+  width: 200px;
+  margin: 0px;
+  height: 40px;
+  border-color: white;
+  border-radius: 5px;
+}
+
+.searchBarBody {
+ 
+  padding: 0px;
+}
+
