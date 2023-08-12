@@ -8,10 +8,8 @@ import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
-import getTooltip from './getToolTip';
 import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 
 // Source data GeoJSON
 const DATA_URL =
@@ -43,9 +41,7 @@ const landCover = [
   ]
 ];
 
-
- function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
-  
+function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [effects] = useState(() => {
     const lightingEffect = new LightingEffect({ambientLight, dirLight});
     lightingEffect.shadowColor = [0, 0, 0, 0.5];
@@ -101,6 +97,89 @@ const landCover = [
     })
   ];
 
+  const [geojsonData, setGeojsonData] = useState([]);
+
+  fetch(DATA_URL)
+  .then((response) =>
+  {
+    return response.json();
+  })
+  .then((json) =>
+  {
+    setGeojsonData(json);
+  });
+
+  function getTooltip(lat, long) 
+  {
+    if(geojsonData === null || geojsonData.length == 0)
+    {
+      return (
+        {
+          html: '<p>Loading...</p>'
+        }
+      );
+    }
+    else
+    {
+      var closest = null;
+      var closestDistance = 1000000;
+
+      for(const entry of geojsonData.features)
+      {
+       var geometry = entry.geometry;
+  
+       if(geometry === null)
+         continue;
+       
+       var coordinates = geometry.coordinates;
+  
+       if(coordinates === null || coordinates.length == 0)
+         continue;
+  
+       if(coordinates[0] === null || coordinates[0].length == 0)
+        continue;
+
+        if(coordinates[0][0] === null)
+        continue;
+
+        const coordLat = coordinates[0][0][0];
+        const coordLong = coordinates[0][0][1];
+
+        const dLat = (lat - coordLat);
+        const dLong = (long - coordLong);
+
+        const distance = Math.sqrt((dLat * dLat) + (dLong * dLong));
+
+        if(distance < closestDistance)
+        {
+          closest = entry;
+          closestDistance = distance;
+        }
+      }  
+
+      if(closest === null)
+      {
+        return (
+          {
+            html: 'No nearby flood plains. You\'re safe!'
+          }
+        );
+      }
+      else
+      {
+        //console.log("Closest " + JSON.stringify(closest));
+
+        // Tooltip needs to be returned in form of html property of object
+        return (
+          {
+            html: '<p> Closest flood plain ' + closest.properties.DOCUMENT_NAME + '</p>'
+          }
+        );
+      }
+    }
+  }
+  
+
   return (
     <>
       <div className ='searchBarContainer'>
@@ -129,7 +208,7 @@ const landCover = [
         effects={effects}
         initialViewState={viewState}
         controller={true}
-        getTooltip = {getTooltip}
+        getTooltip = {() => getTooltip(viewState.latitude, viewState.longitude)}
 
       >
         
