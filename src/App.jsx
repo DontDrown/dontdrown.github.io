@@ -9,6 +9,9 @@ import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
 import getTooltip from './getToolTip';
+import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 // Source data GeoJSON
 const DATA_URL =
@@ -98,32 +101,22 @@ const landCover = [
     })
   ];
 
-
-
-
-  
-  
-
   return (
     <>
-     
       <div className ='searchBarContainer'>
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle BtnGray" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                >
-            </button>
+          <button class="btn btn-secondary dropdown-toggle BtnGray" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
             </div>
         </div>
-        <img src="GeoBtn.png" alt="GeoBtn" class=" BtnGray"/>
         <Search goToPoint = {goToPoint}/>
-        </div>
+        <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
+      </div>
 
-        <button onClick={goToUserLocation}>Find me!</button>
+        
       
        
 
