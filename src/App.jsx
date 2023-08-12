@@ -11,7 +11,7 @@ import Search from './Search.jsx'
 import getTooltip from './getToolTip';
 import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import img from './assets/logo.png'
 
 // Source data GeoJSON
 const DATA_URL =
@@ -114,6 +114,9 @@ const landCover = [
         </div>
         <Search goToPoint = {goToPoint}/>
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
+      </div>
+      <div className = 'logo'>
+        <img src={img}/>
       </div>
 
         
