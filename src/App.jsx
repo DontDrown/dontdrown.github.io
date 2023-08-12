@@ -16,24 +16,6 @@ import {scaleThreshold} from 'd3-scale';
 const DATA_URL =
   './Flood_Plains.json'; // eslint-disable-line
 
-export const COLOR_SCALE = scaleThreshold()
-  .domain([-0.6, -0.45, -0.3, -0.15, 0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.05, 1.2])
-  .range([
-    [65, 182, 196],
-    [127, 205, 187],
-    [199, 233, 180],
-    [237, 248, 177],
-    // zero
-    [255, 255, 204],
-    [255, 237, 160],
-    [254, 217, 118],
-    [254, 178, 76],
-    [253, 141, 60],
-    [252, 78, 42],
-    [227, 26, 28],
-    [189, 0, 38],
-    [128, 0, 38]
-  ]);
 
 const INITIAL_VIEW_STATE = {
   latitude: -36.8509,
@@ -44,7 +26,7 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 };
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json';
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
 
 const ambientLight = new AmbientLight({
   color: [255, 255, 255],
@@ -87,14 +69,14 @@ const landCover = [
     new GeoJsonLayer({
       id: 'geojson',
       data,
-      opacity: 0.8,
+      opacity: 1,
       stroked: false,
       filled: true,
       extruded: true,
       wireframe: true,
-      getElevation: f => Math.sqrt(f.properties.valuePerSqm) * 10,
-      getFillColor: f => COLOR_SCALE(f.properties.growth),
-      getLineColor: [255, 255, 255],
+      getElevation: f => 0,
+      getFillColor: [173, 216, 220],
+      getLineColor: [173, 216, 230],
       pickable: true
     })
   ];
@@ -105,10 +87,9 @@ const landCover = [
       effects={effects}
       initialViewState={INITIAL_VIEW_STATE}
       controller={true}
-    
     >
       <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true}>
-      <GeolocateControl trackUserLocation={true} showUserHeading = {true} showUserLocation ={true} showAccuracyCircle={true}/>
+        <GeolocateControl onGeolocate = {(e)=>{console.log(e)}} trackUserLocation={true} showUserHeading = {true} showUserLocation ={true} showAccuracyCircle={true}/>
       </Map>
       
     </DeckGL>
