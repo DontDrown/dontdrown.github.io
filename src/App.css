@@ -60,6 +60,7 @@
 .dropdown {
   position: relative;
   display: inline-block;
+  margin-right: 2px;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -85,3 +86,15 @@
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
+
+
+.searchBarContainer {
+  display: flex;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+}
+
+
+

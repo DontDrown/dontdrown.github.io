@@ -105,25 +105,30 @@ const landCover = [
   
 
   return (
-    <div>
-      <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem", display: 'flex' }}>
-
-        <div> GEObutton</div>
-
+    <>
+     
+      <div className ='searchBarContainer'>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle BtnGray" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                >
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
+        <img src="GeoBtn.png" alt="GeoBtn" class=" BtnGray"/>
         <Search goToPoint = {goToPoint}/>
+        </div>
 
         <button onClick={goToUserLocation}>Find me!</button>
       
-        <div class="dropdown">
-          <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-          <div id="myDropdown" class="dropdown-content">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-          </div>
-        </div>
+       
 
-      </div>
+     
+
 
 
       <DeckGL
@@ -135,9 +140,9 @@ const landCover = [
 
       >
         
-        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} />
+        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false}/>
       </DeckGL>
-    </div>
+    </>
   );
 }
 
