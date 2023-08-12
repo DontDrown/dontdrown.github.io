@@ -15,6 +15,7 @@
   "dependencies": {
     "deck.gl": "^8.9.23",
     "install": "^0.13.0",
+    "lodash.debounce": "^4.0.8",
     "maplibre-gl": "^3.3.0",
     "npm": "^9.8.1",
     "react": "^18.2.0",

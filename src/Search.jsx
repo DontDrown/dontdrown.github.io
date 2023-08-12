@@ -1,15 +1,35 @@
 import './Search.css'
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
+import debounce from 'lodash.debounce';
+
+const useDebounce = (callback) => {
+    const ref = useRef();
+  
+    useEffect(() => {
+      ref.current = callback;
+    }, [callback]);
+  
+    const debouncedCallback = useMemo(() => {
+      const func = () => {
+        ref.current?.();
+      };
+  
+      return debounce(func, 250);
+    }, []);
+  
+    return debouncedCallback;
+  };
 
 const AUTOCOMPLETE_API_ACCESS_TOKEN = "8fb3d500fc324fb8b14685bde781a1ef";
 
 function Search()
 {
+  const [value, setValue] = useState();
   const [entries, setEntries] = useState([]);
 
-  const inputChangeHandler = (event) => 
+  const debouncedRequest = useDebounce(() => 
   {
-    var query = event.target.value;
+    var query = value;
 
     query = query.replaceAll(' ', '%20');
     var request_url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + query + "&filter=countrycode:nz&format=json&apiKey=" + AUTOCOMPLETE_API_ACCESS_TOKEN;
@@ -23,10 +43,16 @@ function Search()
           setEntries([]);
         else
           setEntries(data.results);
-
-        console.log(data.results);
       });
-  }
+  });
+
+  const inputChangeHandler = (event) =>
+  {
+    const value = event.target.value;
+    setValue(value);
+
+    debouncedRequest();
+  };
 
   return (
         <div>
