@@ -97,16 +97,86 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     })
   ];
 
-  console.log(geojsonData);
+  const [geojsonData, setGeojsonData] = useState([]);
+
+  fetch(DATA_URL)
+  .then((response) =>
+  {
+    return response.json();
+  })
+  .then((json) =>
+  {
+    setGeojsonData(json);
+  });
 
   function getTooltip(lat, long) 
   {
-    // Tooltip needs to be returned in form of html property of object
-    return (
+    if(geojsonData === null || geojsonData.length == 0)
+    {
+      return (
+        {
+          html: '<p>Loading...</p>'
+        }
+      );
+    }
+    else
+    {
+      var closest = null;
+      var closestDistance = 1000000;
+
+      for(const entry of geojsonData.features)
       {
-        html: '<p> Latitude ' + lat + ' Longitude ' + long + '</p>'
+       var geometry = entry.geometry;
+  
+       if(geometry === null)
+         continue;
+       
+       var coordinates = geometry.coordinates;
+  
+       if(coordinates === null || coordinates.length == 0)
+         continue;
+  
+       if(coordinates[0] === null || coordinates[0].length == 0)
+        continue;
+
+        if(coordinates[0][0] === null)
+        continue;
+
+        const coordLat = coordinates[0][0][0];
+        const coordLong = coordinates[0][0][1];
+
+        const dLat = (lat - coordLat);
+        const dLong = (long - coordLong);
+
+        const distance = Math.sqrt((dLat * dLat) + (dLong * dLong));
+
+        if(distance < closestDistance)
+        {
+          closest = entry;
+          closestDistance = distance;
+        }
+      }  
+
+      if(closest === null)
+      {
+        return (
+          {
+            html: 'No nearby flood plains. You\'re safe!'
+          }
+        );
       }
-    );
+      else
+      {
+        //console.log("Closest " + JSON.stringify(closest));
+
+        // Tooltip needs to be returned in form of html property of object
+        return (
+          {
+            html: '<p> Closest flood plain ' + closest.properties.DOCUMENT_NAME + '</p>'
+          }
+        );
+      }
+    }
   }
   
 

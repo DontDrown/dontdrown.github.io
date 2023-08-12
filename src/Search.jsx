@@ -53,7 +53,7 @@ const Search = ({ goToPoint }) =>
 
           data.results.forEach((result, index) =>
           {
-            if(result.city.toUpperCase() === 'AUCKLAND')
+            if(result.state.toUpperCase() === 'AUCKLAND')
                 aucklandResults.push(result);
           });
 
