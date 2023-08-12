@@ -47,7 +47,18 @@ const Search = ({ goToPoint }) =>
         if(data === null || data.results === null)
           setEntries([]);
         else
-          setEntries(data.results);
+        {
+          // Only allow auckland results
+          var aucklandResults = [];
+
+          data.results.forEach((result, index) =>
+          {
+            if(result.city.toUpperCase() === 'AUCKLAND')
+                aucklandResults.push(result);
+          });
+
+          setEntries(aucklandResults);
+        }
       })
       .catch((err) =>
       {
