@@ -1,7 +1,4 @@
 import './App.css'
-
-
-
 import React, {useState} from 'react';
 import {Map} from 'react-map-gl';
 
@@ -10,7 +7,6 @@ import DeckGL from '@deck.gl/react';
 import { GeolocateControl } from 'react-map-gl';
 import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
-import {scaleThreshold} from 'd3-scale';
 
 // Source data GeoJSON
 const DATA_URL =
@@ -86,8 +82,8 @@ const landCover = [
       layers={layers}
       effects={effects}
       initialViewState={INITIAL_VIEW_STATE}
-      controller={true}
-    >
+      controller={true}>
+    
       <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true}>
         <GeolocateControl onGeolocate = {(e)=>{console.log(e)}} trackUserLocation={true} showUserHeading = {true} showUserLocation ={true} showAccuracyCircle={true}/>
       </Map>
