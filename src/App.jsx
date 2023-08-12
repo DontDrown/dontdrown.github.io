@@ -8,7 +8,7 @@ import { GeolocateControl } from 'react-map-gl';
 import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
-
+import Search from './Search.jsx'
 
 // Source data GeoJSON
 const DATA_URL =
@@ -103,9 +103,9 @@ const landCover = [
       <div style={{ zIndex: "30", position: "absolute", top: "1rem", left: "1rem", width: "10rem", display: 'flex' }}>
 
         <div> GEObutton</div>
-        <div>
-          <input placeholder='Enter Your Address' />
-        </div>
+
+        <Search />
+
         <button onClick={goToUserLocation}>Find me!</button>
       
         <div class="dropdown">
