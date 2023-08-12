@@ -47,6 +47,10 @@ function Search()
           setEntries([]);
         else
           setEntries(data.results);
+      })
+      .catch((err) =>
+      {
+        setEntries([]);
       });
   });
 
@@ -54,9 +58,17 @@ function Search()
   {
     const value = event.target.value;
     setValue(value);
-    setSearchValue(value);
 
-    debouncedRequest();
+    if(value === null || value.length == 0)
+    {
+        setSearchValue("");
+        setEntries([]);
+    }
+    else
+    {
+        setSearchValue(value);
+        debouncedRequest();
+    }
   };
 
   const autocompleteClickHandler = (entry) =>
@@ -66,6 +78,9 @@ function Search()
 
     // Update search box
     setSearchValue(entry.address_line1 + ", " + entry.address_line2);
+
+    // Clear autocomplete entries
+    setEntries([]);
   };
 
   return (
@@ -74,13 +89,14 @@ function Search()
                 <input placeholder='Enter Your Address' onChange={inputChangeHandler} value={searchValue}/>
             </div>
 
-            {entries.map(entry =>
+            {
+            entries?.map(entry =>
             (
                 <div key={entry.address_line1 + ", " + entry.address_line2} className="autocomplete-entry" onClick={() => autocompleteClickHandler(entry)}>
                     {entry.address_line1 + ", " + entry.address_line2}
                 </div>
-            )
-            )}
+            ))
+            }
         </div>
     );
 }
