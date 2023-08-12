@@ -41,6 +41,20 @@ const landCover = [
   ]
 ];
 
+var geojsonData = [];
+
+fetch(DATA_URL)
+.then((response) =>
+{
+  return response.json();
+})
+.then((json) =>
+{
+  console.log('update');
+  geojsonData = json;
+});
+
+
 function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [effects] = useState(() => {
     const lightingEffect = new LightingEffect({ambientLight, dirLight});
@@ -101,18 +115,6 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       pickable: true
     })
   ];
-
-  const [geojsonData, setGeojsonData] = useState([]);
-
-  fetch(DATA_URL)
-  .then((response) =>
-  {
-    return response.json();
-  })
-  .then((json) =>
-  {
-    setGeojsonData(json);
-  });
 
   function getTooltip() 
   {
