@@ -14,7 +14,7 @@ const useDebounce = (callback) => {
         ref.current?.();
       };
   
-      return debounce(func, 250);
+      return debounce(func, 100);
     }, []);
   
     return debouncedCallback;
@@ -28,6 +28,7 @@ const Search = ({ goToPoint }) =>
   const [value, setValue] = useState();
   const [searchValue, setSearchValue] = useState();
 
+  const [previousValue, setPreviousValue] = useState();
   const [entries, setEntries] = useState([]);
 
   const debouncedRequest = useDebounce(() => 
@@ -41,12 +42,8 @@ const Search = ({ goToPoint }) =>
       .then((res) => res.json())
       .then((data) =>
       {
-        console.log(data.results);
-
         // Handle auto complete results
-        if(data === null || data.results === null)
-          setEntries([]);
-        else
+        if(data !== null && data.results !== null)
         {
           // Only allow auckland results
           var aucklandResults = [];
@@ -57,28 +54,31 @@ const Search = ({ goToPoint }) =>
                 aucklandResults.push(result);
           });
 
-          setEntries(aucklandResults);
+          if(aucklandResults.length > 0)
+              setEntries(aucklandResults);
+          else if(!value.startsWith(previousValue))
+              setEntries([]);
         }
       })
       .catch((err) =>
       {
-        setEntries([]);
       });
   });
 
   const inputChangeHandler = (event) =>
   {
-    const value = event.target.value;
-    setValue(value);
+    setPreviousValue(value);
+    const eventValue = event.target.value;
+    setValue(eventValue);
 
-    if(value === null || value.length == 0)
+    if(eventValue === null || eventValue.length == 0)
     {
         setSearchValue("");
         setEntries([]);
     }
     else
     {
-        setSearchValue(value);
+        setSearchValue(eventValue);
         debouncedRequest();
     }
   };
