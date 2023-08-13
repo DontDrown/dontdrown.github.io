@@ -168,7 +168,8 @@ for (let i = 0; i <= 360; i += 10) {
           html: '<p></p>',
           style: {
             backgroundColor: 'white',
-            color: 'black'
+            color: 'black',
+            opacity: 0
           }
         }
       );
@@ -201,7 +202,8 @@ for (let i = 0; i <= 360; i += 10) {
           html: '<p>Loading...</p>',
           style: {
             backgroundColor: 'white',
-            color: 'black'
+            color: 'black',
+            opacity: 100
           }
         }
       );
@@ -269,7 +271,8 @@ for (let i = 0; i <= 360; i += 10) {
             html: 'No nearby flood plains. <br>You\'re safe!',
             style: {
               backgroundColor: 'white',
-              color: 'black'
+              color: 'black',
+              opacity: 100
             }
           }
         );
@@ -285,14 +288,15 @@ for (let i = 0; i <= 360; i += 10) {
         var floodPlainDistance = Math.round(measure(currentLatitude, currentLongitude, closestLatLong[0], closestLatLong[1]));
         console.log(floodPlainDistance);
 
-        if(insideFP || floodPlainDistance < 100 * (currentZoom / 4))
+        if(insideFP || floodPlainDistance < 100 * (currentZoom / 5))
         {
           return (
             {
               html: '<p>You are within a flood plain!</p>',
               style: {
                 backgroundColor: 'white',
-                color: 'black'
+                color: 'black',
+                opacity: 100
               }
             }
           );
@@ -307,7 +311,8 @@ for (let i = 0; i <= 360; i += 10) {
                 html: "<p> You are near a flood plain! <br>You are " + floodPlainDistance + ' m away.</p>',
                 style: {
                   backgroundColor: 'white',
-                  color: 'black'
+                  color: 'black',
+                  opacity: 100
                 }
               }
             );
@@ -319,7 +324,8 @@ for (let i = 0; i <= 360; i += 10) {
                 html: 'No nearby flood plains. <br>You\'re safe!',
                 style: {
                   backgroundColor: 'white',
-                  color: 'black'
+                  color: 'black',
+                  opacity: 100
                 }
               }
             );
@@ -349,7 +355,8 @@ for (let i = 0; i <= 360; i += 10) {
 
   const hover = (info, event) =>
   {
-    if(info === null || info.coordinate === undefined || info.coordinate === null || info.coordinate.length < 2 || info.x < 100 || info.y < 100)
+    if(info === null || info.coordinate === undefined || info.coordinate === null || info.coordinate.length < 2 || 
+      info.x < 150 || info.y < 150 || info.x > screen.width - 250 || info.y > screen.height - 250)
       {
         setCurrentLatitude(null);
         setCurrentLongitude(null);
