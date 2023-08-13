@@ -53,7 +53,6 @@ fetch(DATA_URL)
 })
 .then((json) =>
 {
-  console.log('update');
   geojsonData = json;
 });
 
@@ -158,6 +157,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     {
       var closest = null;
       var closestDistance = 1000000;
+      var closestLatLong = [];
 
       for(const entry of geojsonData.features)
       {
@@ -190,6 +190,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         {
           closest = entry;
           closestDistance = distance;
+          closestLatLong = [coordLat, coordLong];
         }
       }  
 
@@ -212,7 +213,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         var coordinates = geometry.coordinates[0];
 
         var inside = inside([currentLongitude, currentLatitude], coordinates);
-
+        
         if(inside)
         {
           return (
@@ -223,10 +224,25 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         }
         else
         {
+          function measure(lat1, lon1, lat2, lon2)
+          {  // generally used geo measurement function
+              var R = 6378.137; // Radius of earth in KM
+              var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+              var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+              var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+              var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+              var d = R * c;
+              return d * 1000; // meters
+          }
+
+          var floodPlainDistance = Math.round(measure(closestLatLong[0], closestLatLong[1], currentLatitude, currentLongitude));
+
           // Tooltip needs to be returned in form of html property of object
           return (
             {
-              html: "<p> You are near a flood plain. <br>You are Lat-Long distance: " + closestDistance + '</p>'
+              html: "<p> You are near a flood plain! <br>You are " + floodPlainDistance + ' m away.</p>'
             }
           );
         }
