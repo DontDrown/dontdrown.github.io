@@ -36,7 +36,7 @@ const Search = ({ goToPoint }) =>
     var query = value;
 
     query = query.replaceAll(' ', '%20');
-    var request_url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + query + "&filter=countrycode:nz&format=json&apiKey=" + AUTOCOMPLETE_API_ACCESS_TOKEN;
+    var request_url = "https://api.geoapify.com/v1/geocode/autocomplete?text=" + query + "&filter=countrycode:nz&limit=40&format=json&apiKey=" + AUTOCOMPLETE_API_ACCESS_TOKEN;
 
     fetch(request_url)
       .then((res) => res.json())

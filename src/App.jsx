@@ -4,7 +4,7 @@ import {Map, Marker} from 'react-map-gl';
 
 import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
-import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
+import {GeoJsonLayer, PolygonLayer,IconLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
@@ -68,7 +68,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [currentZoom, setCurrentZoom] = useState(0);
   const [currentLongitude, setCurrentLongitude] = useState();
   const [currentLatitude, setCurrentLatitude] = useState();
-
+  const [markerDropped, setMarkerDropped] = useState(false);
   const [viewState,setViewState] = useState({
     latitude: -36.8509,
     longitude: 174.7645,
@@ -78,17 +78,20 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     bearing: 0
   });
 
-  const [markerPos,setMarkerPos] = useState(null)
+  const [markerPos,setMarkerPos] = useState([[1,1],[5,5]])
   const [modalState,setModalState] = useState('closed')
+  console.log(markerPos)
 
+  
   const goToPoint = useCallback((lat,lon) => {
-    setMarkerPos({longitude:lon,latitude:lat})
+    
     setViewState({...viewState,
       longitude: lon,
       latitude: lat,
       zoom: 18,
       transitionInterpolator: new FlyToInterpolator({speed:0.1})
     })
+    setMarkerDropped(true)
     setCurrentLongitude(lon);
     setCurrentLatitude(lat);
   }, []);
@@ -100,6 +103,29 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   }
 
   
+  const circleCenter = [markerDropped ? viewState.longitude : 0, markerDropped ? viewState.latitude : 0]; // [longitude, latitude]
+  const radius = 0.0002; // Adjust this value to change the circle's size
+
+  const circlePolygon = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[]],
+        },
+      },
+    ],
+  };
+
+// Generate the circle polygon coordinates
+for (let i = 0; i <= 360; i += 10) {
+  const angle = (i * Math.PI) / 180;
+  const x = circleCenter[0] + radius * Math.cos(angle);
+  const y = circleCenter[1] + radius * Math.sin(angle);
+  circlePolygon.features[0].geometry.coordinates[0].push([x, y]);
+}
 
   const layers = [
     // only needed when using shadows - a plane for shadows to drop on
@@ -123,7 +149,15 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       getLineColor: [9, 255, 800],
       pickable: true
     }),
-  ];
+    new GeoJsonLayer({
+      id: 'marker-layer',
+      data: circlePolygon,
+      filled: true,
+      stroked: false,
+      getFillColor: d => markerDropped ? [195, 255, 104, 1000] // RGBA color for the circle fill
+        : [255,255,255,0],
+      lineWidthMinPixels: 2,
+    })]
 
   function getTooltip() 
   {
@@ -365,11 +399,10 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false} 
         onLoad={(e) => {
           e.target.addLayer(mapboxBuildingLayer);
-        }}>
-          <Marker latitude ={ -36.8509} longitude = {174.7645}><h1>safs</h1></Marker>
-       
-    
-          { (markerPos != null) ? <Marker longitude={markerPos.longitude} latitude={markerPos.latitude}><h1>asfs</h1></Marker>:<></>}
+        }}
+      
+        >
+        
         </Map>
       
       </DeckGL>
