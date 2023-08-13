@@ -8,7 +8,6 @@ import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
-import getTooltip from './getToolTip';
 import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import img from './assets/logo.png'
