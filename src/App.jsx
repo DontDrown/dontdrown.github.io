@@ -217,7 +217,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         {
           return (
             {
-              html: '<p>You are within a flood plain! <br>Closest flood plain: ' + closest.properties.DOCUMENT_NAME + '</p>'
+              html: '<p>You are within a flood plain!</p>'
             }
           );
         }
@@ -226,7 +226,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
           // Tooltip needs to be returned in form of html property of object
           return (
             {
-              html: "<p> You are near a flood plain. <br>You are Lat-Long distance: " + closestDistance + ' <br>Closest flood plain: ' + closest.properties.DOCUMENT_NAME + '</p>'
+              html: "<p> You are near a flood plain. <br>You are Lat-Long distance: " + closestDistance + '</p>'
             }
           );
         }
