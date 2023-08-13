@@ -13,13 +13,26 @@ const modalStyles = {
       height:'50%'
     },
   };
+
+  const modalStyles2 = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width:'60%',
+
+    },
+  };
   
 
 const InfoModal = ({modalState,setModalState}) => {
     if(modalState == "firstTime")
     {
         return(
-            <ReactModal isOpen = {true} style = {modalStyles}>
+            <ReactModal isOpen = {true} style = {modalStyles2}>
             <div className='modalContainer'>
             <h2 style ={{cursor:"pointer",position:'absolute',right:30}}onClick={()=>setModalState("closed")}>X</h2>
                 <div style={{flexDirection:'row',display:'flex',textAlign:'center',justifyContent:'center'}}>  <img style = {{width:'30%'}}src ={img}/></div>
