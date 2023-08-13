@@ -14,7 +14,7 @@ const useDebounce = (callback) => {
         ref.current?.();
       };
   
-      return debounce(func, 250);
+      return debounce(func, 100);
     }, []);
   
     return debouncedCallback;
@@ -41,12 +41,8 @@ const Search = ({ goToPoint }) =>
       .then((res) => res.json())
       .then((data) =>
       {
-        console.log(data.results);
-
         // Handle auto complete results
-        if(data === null || data.results === null)
-          setEntries([]);
-        else
+        if(data !== null && data.results !== null)
         {
           // Only allow auckland results
           var aucklandResults = [];
@@ -57,12 +53,12 @@ const Search = ({ goToPoint }) =>
                 aucklandResults.push(result);
           });
 
-          setEntries(aucklandResults);
+          if(aucklandResults.length > 0)
+              setEntries(aucklandResults);
         }
       })
       .catch((err) =>
       {
-        setEntries([]);
       });
   });
 
