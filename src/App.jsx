@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import img from './assets/logo.png'
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+
 import InfoModal from './InfoModal';
 // Source data GeoJSON
 const DATA_URL =
@@ -334,6 +335,8 @@ for (let i = 0; i <= 360; i += 10) {
       }
     }
   }
+
+  
   
   const mapboxBuildingLayer = {
     id: "3d-buildings",
@@ -367,6 +370,7 @@ for (let i = 0; i <= 360; i += 10) {
     setCurrentLatitude(info.coordinate[1]);
   };
 
+
   return (
     <>
       <InfoModal modalState = {modalState} setModalState ={setModalState}/>
@@ -382,7 +386,17 @@ for (let i = 0; i <= 360; i += 10) {
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
       </div>
       <div className = 'logo'>
-        <img src={img}/>
+        <h4>Legend</h4>
+        <div className='legendEntry' >
+          <p>Water</p>
+          <div className = "legend" style={{backgroundColor:'rgb(9, 255, 200)'}}/>
+        </div>
+        <div className='legendEntry'>
+          <p>Current Location</p>
+          <div className = "legend" style={{backgroundColor:'rgb(195, 255, 104)'}}/>
+        </div>
+        
+       
       </div>
 
         
