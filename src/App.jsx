@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import img from './assets/logo.png'
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-
+import InfoModal from './InfoModal';
 // Source data GeoJSON
 const DATA_URL =
   './Flood_Plains.json'; // eslint-disable-line
@@ -72,19 +72,20 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     latitude: -36.8509,
     longitude: 174.7645,
     zoom: 11,
-    maxZoom: 16,
+    maxZoom: 24,
     pitch: 45,
     bearing: 0
   });
 
   const [markerPos,setMarkerPos] = useState(null)
+  const [modalState,setModalState] = useState('closed')
 
   const goToPoint = useCallback((lat,lon) => {
     setMarkerPos({longitude:lon,latitude:lat})
     setViewState({...viewState,
       longitude: lon,
       latitude: lat,
-      zoom: 16,
+      zoom: 18,
       transitionInterpolator: new FlyToInterpolator({speed:0.1})
     })
     setCurrentLongitude(lon);
@@ -265,13 +266,13 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
 
   return (
     <>
+      <InfoModal modalState = {modalState} setModalState ={setModalState}/>
       <div className ='searchBarContainer'>
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle BtnGray" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" onClick={()=>setModalState('prepare')}>Flood Preperation</a>
+              <a class="dropdown-item" onClick={()=>setModalState('contact')}>Contact Emergency Services</a>
             </div>
         </div>
         <Search goToPoint = {goToPoint}/>
