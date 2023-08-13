@@ -1,5 +1,5 @@
 import ReactModal from "react-modal"
-
+import img from './assets/logo.png'
 
 const modalStyles = {
     content: {
@@ -13,14 +13,30 @@ const modalStyles = {
       height:'50%'
     },
   };
+  
 
 const InfoModal = ({modalState,setModalState}) => {
+    if(modalState == "firstTime")
+    {
+        return(
+            <ReactModal isOpen = {true} style = {modalStyles}>
+            <div className='modalContainer'>
+            <h2 style ={{cursor:"pointer",position:'absolute',right:30}}onClick={()=>setModalState("closed")}>X</h2>
+                <div style={{flexDirection:'row',display:'flex',textAlign:'center',justifyContent:'center'}}>  <img style = {{width:'30%'}}src ={img}/></div>
+                <p style ={{textAlign:'center',fontSize:'20px',fontWeight:'500'}}>Welcome!</p>
+                <p style ={{textAlign:'center'}}>Here you can find if you are in the flood area in Auckland.</p>
+                <p style ={{textAlign:'center'}}>You can search by an address or a location and have some useful tips.</p>
+                <p style ={{textAlign:'center'}}>Be ready! Be proactive! Be safe!</p>
+              </div>
+          </ReactModal>
+        )
+    }
     if(modalState == "prepare")
     {
         return(
             <ReactModal isOpen = {true} style = {modalStyles}>
             <div className='modalContainer'>
-                <div style={{flexDirection:'row',display:'flex'}}> <h2 style={{flex:1}}>Flood Preperation</h2> <div><h2 style ={{cursor:"pointer"}}onClick={()=>setModalState("closed")}>X</h2></div></div>
+                <div style={{flexDirection:'row',display:'flex'}}> <h2 style={{flex:1}}>Flood Preparation</h2> <div><h2 style ={{cursor:"pointer"}}onClick={()=>setModalState("closed")}>X</h2></div></div>
              
               <p>The flood is dangerous if</p>
               <ul>

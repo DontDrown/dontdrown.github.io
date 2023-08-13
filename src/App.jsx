@@ -10,7 +10,7 @@ import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
 import  { faExpand, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import img from './assets/logo.png'
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 
@@ -80,7 +80,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   });
 
   const [markerPos,setMarkerPos] = useState([[1,1],[5,5]])
-  const [modalState,setModalState] = useState('closed')
+  const [modalState,setModalState] = useState('firstTime')
   console.log(markerPos)
 
   
@@ -383,18 +383,22 @@ for (let i = 0; i <= 360; i += 10) {
     }
   };
 
+
+
+
   return (
     <>
       <InfoModal modalState = {modalState} setModalState ={setModalState}/>
       <div className ='searchBarContainer'>
-      <Search goToPoint = {goToPoint}/>
+      
         <div class="dropdown">
           <button class=" dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" onClick={()=>setModalState('prepare')}>Flood Preperation</a>
+              <a class="dropdown-item" onClick={()=>setModalState('prepare')}>Flood Preparation</a>
               <a class="dropdown-item" onClick={()=>setModalState('contact')}>Contact Emergency Services</a>
             </div>
         </div>
+        <Search goToPoint = {goToPoint}/>
        
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
         <button title="Go Fullscreen" className="locateButton" onClick={fullscreenButton}><FontAwesomeIcon icon={faExpand} /></button>
