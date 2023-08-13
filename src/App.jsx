@@ -8,7 +8,7 @@ import {GeoJsonLayer, PolygonLayer,IconLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
-import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import  { faExpand, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import img from './assets/logo.png'
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -367,6 +367,19 @@ for (let i = 0; i <= 360; i += 10) {
     setCurrentLatitude(info.coordinate[1]);
   };
 
+  const fullscreenButton = () =>
+  {
+    if( window.innerHeight == screen.height || window.fullScreen ) 
+    {
+        // browser is fullscreen
+        document.exitFullscreen();
+    }
+    else
+    {
+      document.body.requestFullscreen();
+    }
+  };
+
   return (
     <>
       <InfoModal modalState = {modalState} setModalState ={setModalState}/>
@@ -380,6 +393,7 @@ for (let i = 0; i <= 360; i += 10) {
         </div>
         <Search goToPoint = {goToPoint}/>
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
+        <button title="Go Fullscreen" className="locateButton" onClick={fullscreenButton}><FontAwesomeIcon icon={faExpand} /></button>
       </div>
 
         
