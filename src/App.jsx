@@ -4,7 +4,7 @@ import {Map, Marker} from 'react-map-gl';
 
 import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
-import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
+import {GeoJsonLayer, PolygonLayer,IconLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
@@ -77,11 +77,11 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     bearing: 0
   });
 
-  const [markerPos,setMarkerPos] = useState(null)
+  const [markerPos,setMarkerPos] = useState([[1,1],[5,5]])
   const [modalState,setModalState] = useState('closed')
-
+  console.log(markerPos)
   const goToPoint = useCallback((lat,lon) => {
-    setMarkerPos({longitude:lon,latitude:lat})
+    setMarkerPos( [lat,lon])
     setViewState({...viewState,
       longitude: lon,
       latitude: lat,
@@ -122,7 +122,20 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       getLineColor: [9, 255, 800],
       pickable: true
     }),
-  ];
+    new IconLayer({
+      id: "icon",
+      data: [markerPos],
+      getIcon: (d) => ({
+        url:
+          "https://upload.wikimedia.org/wikipedia/commons/2/25/Blisk-logo-512-512-background-transparent.png",
+        width: 128,
+        height: 128
+      }),
+      getPosition: (d) => d,
+      
+      getSize: 200,
+      pickable: true,
+  })]
 
   function getTooltip() 
   {
@@ -302,11 +315,10 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false} 
         onLoad={(e) => {
           e.target.addLayer(mapboxBuildingLayer);
-        }}>
-          <Marker latitude ={ -36.8509} longitude = {174.7645}><h1>safs</h1></Marker>
-       
-    
-          { (markerPos != null) ? <Marker longitude={markerPos.longitude} latitude={markerPos.latitude}><h1>asfs</h1></Marker>:<></>}
+        }}
+      
+        >
+        
         </Map>
       
       </DeckGL>
