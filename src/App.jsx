@@ -67,7 +67,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
 
   const [currentLongitude, setCurrentLongitude] = useState();
   const [currentLatitude, setCurrentLatitude] = useState();
-
+  const [markerDropped, setMarkerDropped] = useState(false);
   const [viewState,setViewState] = useState({
     latitude: -36.8509,
     longitude: 174.7645,
@@ -80,14 +80,17 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [markerPos,setMarkerPos] = useState([[1,1],[5,5]])
   const [modalState,setModalState] = useState('closed')
   console.log(markerPos)
+
+  
   const goToPoint = useCallback((lat,lon) => {
-    setMarkerPos( [lat,lon])
+    
     setViewState({...viewState,
       longitude: lon,
       latitude: lat,
       zoom: 18,
       transitionInterpolator: new FlyToInterpolator({speed:0.1})
     })
+    setMarkerDropped(true)
     setCurrentLongitude(lon);
     setCurrentLatitude(lat);
   }, []);
@@ -99,6 +102,29 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   }
 
   
+  const circleCenter = [markerDropped ? viewState.longitude : 0, markerDropped ? viewState.latitude : 0]; // [longitude, latitude]
+  const radius = 0.0002; // Adjust this value to change the circle's size
+
+  const circlePolygon = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[]],
+        },
+      },
+    ],
+  };
+
+// Generate the circle polygon coordinates
+for (let i = 0; i <= 360; i += 10) {
+  const angle = (i * Math.PI) / 180;
+  const x = circleCenter[0] + radius * Math.cos(angle);
+  const y = circleCenter[1] + radius * Math.sin(angle);
+  circlePolygon.features[0].geometry.coordinates[0].push([x, y]);
+}
 
   const layers = [
     // only needed when using shadows - a plane for shadows to drop on
@@ -122,20 +148,15 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       getLineColor: [9, 255, 800],
       pickable: true
     }),
-    new IconLayer({
-      id: "icon",
-      data: [markerPos],
-      getIcon: (d) => ({
-        url:
-          "https://upload.wikimedia.org/wikipedia/commons/2/25/Blisk-logo-512-512-background-transparent.png",
-        width: 128,
-        height: 128
-      }),
-      getPosition: (d) => d,
-      
-      getSize: 200,
-      pickable: true,
-  })]
+    new GeoJsonLayer({
+      id: 'marker-layer',
+      data: circlePolygon,
+      filled: true,
+      stroked: false,
+      getFillColor: d => markerDropped ? [195, 255, 104, 1000] // RGBA color for the circle fill
+        : [255,255,255,0],
+      lineWidthMinPixels: 2,
+    })]
 
   function getTooltip() 
   {
