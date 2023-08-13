@@ -8,7 +8,6 @@ import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
-import getTooltip from './getToolTip';
 import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import img from './assets/logo.png'
@@ -45,14 +44,30 @@ const landCover = [
   ]
 ];
 
+var geojsonData = [];
 
- function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
-  
+fetch(DATA_URL)
+.then((response) =>
+{
+  return response.json();
+})
+.then((json) =>
+{
+  console.log('update');
+  geojsonData = json;
+});
+
+
+
+function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [effects] = useState(() => {
     const lightingEffect = new LightingEffect({ambientLight, dirLight});
     lightingEffect.shadowColor = [0, 0, 0, 0.5];
     return [lightingEffect];
   });
+
+  const [currentLongitude, setCurrentLongitude] = useState();
+  const [currentLatitude, setCurrentLatitude] = useState();
 
   const [viewState,setViewState] = useState({
     latitude: -36.8509,
@@ -73,6 +88,8 @@ const landCover = [
       zoom: 16,
       transitionInterpolator: new FlyToInterpolator({speed:0.1})
     })
+    setCurrentLongitude(lon);
+    setCurrentLatitude(lat);
   }, []);
 
   const goToUserLocation = () => {
@@ -107,6 +124,116 @@ const landCover = [
     }),
   ];
 
+  function getTooltip() 
+  {
+    function inside(point, vs) 
+    {
+      // ray-casting algorithm based on
+      // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
+      
+      var x = point[0], y = point[1];
+      
+      var inside = false;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+          var xi = vs[i][0], yi = vs[i][1];
+          var xj = vs[j][0], yj = vs[j][1];
+          
+          var intersect = ((yi > y) != (yj > y))
+              && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+          if (intersect) inside = !inside;
+      }
+      
+      return inside;
+    };
+  
+    if(geojsonData === null || geojsonData.length == 0)
+    {
+      return (
+        {
+          html: '<p>Loading...</p>'
+        }
+      );
+    }
+    else
+    {
+      var closest = null;
+      var closestDistance = 1000000;
+
+      for(const entry of geojsonData.features)
+      {
+       var geometry = entry.geometry;
+  
+       if(geometry === null)
+         continue;
+       
+       var coordinates = geometry.coordinates;
+  
+       if(coordinates === null || coordinates.length == 0)
+         continue;
+  
+       if(coordinates[0] === null || coordinates[0].length == 0)
+        continue;
+
+        if(coordinates[0][0] === null)
+        continue;
+
+        const coordLat = coordinates[0][0][1];
+        const coordLong = coordinates[0][0][0];
+
+        const dLat = (currentLatitude - coordLat);
+        const dLong = (currentLongitude - coordLong);
+
+        const distance = Math.sqrt((dLat * dLat) + (dLong * dLong));
+
+        // Get closest flood plain by distance.
+        if(distance < closestDistance)
+        {
+          closest = entry;
+          closestDistance = distance;
+        }
+      }  
+
+      if(closest === null || 
+        closest.geometry === null || 
+        closest.geometry.coordinates === null || 
+        closest.geometry.coordinates[0] === null || 
+        closest.geometry.coordinates[0].length == 0)
+      {
+        return (
+          {
+            html: 'No nearby flood plains. You\'re safe!'
+          }
+        );
+      }
+      else
+      {
+        // Check if within flood plain bounds.
+        var geometry = closest.geometry;  
+        var coordinates = geometry.coordinates[0];
+
+        var inside = inside([currentLongitude, currentLatitude], coordinates);
+
+        if(inside)
+        {
+          return (
+            {
+              html: '<p>You are within a flood plain! <br>Closest flood plain: ' + closest.properties.DOCUMENT_NAME + '</p>'
+            }
+          );
+        }
+        else
+        {
+          // Tooltip needs to be returned in form of html property of object
+          return (
+            {
+              html: "<p> You are near a flood plain. <br>You are Lat-Long distance: " + closestDistance + ' <br>Closest flood plain: ' + closest.properties.DOCUMENT_NAME + '</p>'
+            }
+          );
+        }
+      }
+    }
+  }
+  
   const mapboxBuildingLayer = {
     id: "3d-buildings",
     source: "carto",
@@ -151,7 +278,7 @@ const landCover = [
         effects={effects}
         initialViewState={viewState}
         controller={true}
-        getTooltip = {getTooltip}
+        getTooltip = {() => getTooltip()}
 
       >
         
