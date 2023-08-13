@@ -295,7 +295,6 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         initialViewState={viewState}
         controller={true}
         getTooltip = {() => getTooltip()}
-
       >
         
         <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false} 
