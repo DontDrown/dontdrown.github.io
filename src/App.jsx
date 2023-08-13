@@ -197,7 +197,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         const distance = measure(currentLatitude, currentLongitude, coordLat, coordLong);
 
         // Get closest flood plain by distance.
-        if(distance <= closestDistance)
+        if(distance < closestDistance)
         {
           closest = entry;
           closestDistance = distance;
@@ -226,6 +226,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         var inside = inside([currentLongitude, currentLatitude], coordinates);
 
         var floodPlainDistance = Math.round(measure(closestLatLong[0], closestLatLong[1], currentLatitude, currentLongitude));
+        console.log(floodPlainDistance);
 
         if(inside || floodPlainDistance < 50)
         {
@@ -237,10 +238,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         }
         else
         {
-          console.log(distanceThreshold);
-          var distanceThreshold = closest.properties.Shape__Length / 4;
-
-          if(floodPlainDistance <= distanceThreshold)
+          if(floodPlainDistance <= 150)
           {
             // Tooltip needs to be returned in form of html property of object
             return (
