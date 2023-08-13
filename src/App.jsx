@@ -285,7 +285,7 @@ for (let i = 0; i <= 360; i += 10) {
         var floodPlainDistance = Math.round(measure(currentLatitude, currentLongitude, closestLatLong[0], closestLatLong[1]));
         console.log(floodPlainDistance);
 
-        if(insideFP || floodPlainDistance < 100 * (currentZoom / 8))
+        if(insideFP || floodPlainDistance < 100 * (currentZoom / 4))
         {
           return (
             {
@@ -299,7 +299,7 @@ for (let i = 0; i <= 360; i += 10) {
         }
         else
         {
-          if(floodPlainDistance <= 400 * (currentZoom / 3))
+          if(floodPlainDistance <= 200 * (currentZoom / 3))
           {
             // Tooltip needs to be returned in form of html property of object
             return (
