@@ -387,6 +387,7 @@ for (let i = 0; i <= 360; i += 10) {
     <>
       <InfoModal modalState = {modalState} setModalState ={setModalState}/>
       <div className ='searchBarContainer'>
+      <Search goToPoint = {goToPoint}/>
         <div class="dropdown">
           <button class=" dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -394,14 +395,15 @@ for (let i = 0; i <= 360; i += 10) {
               <a class="dropdown-item" onClick={()=>setModalState('contact')}>Contact Emergency Services</a>
             </div>
         </div>
-        <Search goToPoint = {goToPoint}/>
+       
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
+        <button title="Go Fullscreen" className="locateButton" onClick={fullscreenButton}><FontAwesomeIcon icon={faExpand} /></button>
       </div>
       <div className = 'logo'>
         <h4>Legend</h4>
         <div className='legendEntry' >
           <p>Water</p>
-          <div className = "legend" style={{backgroundColor:'rgb(9, 255, 200)'}}/>
+          <div className = "legend" style={{backgroundColor:'#8DC5E8'}}/>
         </div>
         <div className='legendEntry'>
           <p>Current Location</p>
@@ -409,7 +411,7 @@ for (let i = 0; i <= 360; i += 10) {
         </div>
         
        
-        <button title="Go Fullscreen" className="locateButton" onClick={fullscreenButton}><FontAwesomeIcon icon={faExpand} /></button>
+       
       </div>
 
         
