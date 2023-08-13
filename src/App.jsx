@@ -65,6 +65,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     return [lightingEffect];
   });
 
+  const [currentZoom, setCurrentZoom] = useState(0);
   const [currentLongitude, setCurrentLongitude] = useState();
   const [currentLatitude, setCurrentLatitude] = useState();
 
@@ -126,6 +127,19 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
 
   function getTooltip() 
   {
+    if(currentLatitude === undefined || currentLatitude === null || currentLongitude === undefined || currentLongitude === null)
+    {
+      return (
+        {
+          html: '<p></p>',
+          style: {
+            backgroundColor: 'white',
+            color: 'black'
+          }
+        }
+      );
+    }
+
     function inside(point, vs) 
     {
       // ray-casting algorithm based on
@@ -150,7 +164,11 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     {
       return (
         {
-          html: '<p>Loading...</p>'
+          html: '<p>Loading...</p>',
+          style: {
+            backgroundColor: 'white',
+            color: 'black'
+          }
         }
       );
     }
@@ -214,7 +232,11 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       {
         return (
           {
-            html: 'No nearby flood plains. You\'re safe!'
+            html: 'No nearby flood plains. <br>You\'re safe!',
+            style: {
+              backgroundColor: 'white',
+              color: 'black'
+            }
           }
         );
       }
@@ -224,27 +246,35 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         var geometry = closest.geometry;  
         var coordinates = geometry.coordinates[0];
 
-        var inside = inside([currentLongitude, currentLatitude], coordinates);
+        var insideFP = inside([currentLongitude, currentLatitude], coordinates);
 
-        var floodPlainDistance = Math.round(measure(closestLatLong[0], closestLatLong[1], currentLatitude, currentLongitude));
+        var floodPlainDistance = Math.round(measure(currentLatitude, currentLongitude, closestLatLong[0], closestLatLong[1]));
         console.log(floodPlainDistance);
 
-        if(inside || floodPlainDistance < 50)
+        if(insideFP || floodPlainDistance < 100 * (currentZoom / 8))
         {
           return (
             {
-              html: '<p>You are within a flood plain!</p>'
+              html: '<p>You are within a flood plain!</p>',
+              style: {
+                backgroundColor: 'white',
+                color: 'black'
+              }
             }
           );
         }
         else
         {
-          if(floodPlainDistance <= 150)
+          if(floodPlainDistance <= 400 * (currentZoom / 3))
           {
             // Tooltip needs to be returned in form of html property of object
             return (
               {
-                html: "<p> You are near a flood plain! <br>You are " + floodPlainDistance + ' m away.</p>'
+                html: "<p> You are near a flood plain! <br>You are " + floodPlainDistance + ' m away.</p>',
+                style: {
+                  backgroundColor: 'white',
+                  color: 'black'
+                }
               }
             );
           }
@@ -252,7 +282,11 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
           {
             return (
               {
-                html: 'No nearby flood plains. You\'re safe!'
+                html: 'No nearby flood plains. <br>You\'re safe!',
+                style: {
+                  backgroundColor: 'white',
+                  color: 'black'
+                }
               }
             );
           }
@@ -274,13 +308,19 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     },
   };
 
+  const viewStateChange = (viewState) =>
+  {
+    setCurrentZoom(viewState.viewState.zoom);
+  };
+
   const hover = (info, event) =>
   {
-    console.log(info);
-    console.log(event);
-
-    if(info === null || info.coordinate === undefined || info.coordinate === null || info.coordinate.length < 2)
-      return;
+    if(info === null || info.coordinate === undefined || info.coordinate === null || info.coordinate.length < 2 || info.x < 100 || info.y < 100)
+      {
+        setCurrentLatitude(null);
+        setCurrentLongitude(null);
+        return;
+      }
 
     setCurrentLongitude(info.coordinate[0]);
     setCurrentLatitude(info.coordinate[1]);
@@ -319,6 +359,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         controller={true}
         getTooltip = {() => getTooltip()}
         onHover={hover}
+        onViewStateChange={viewStateChange}
       >
         
         <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false} 
