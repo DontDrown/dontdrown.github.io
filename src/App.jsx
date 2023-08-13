@@ -381,9 +381,6 @@ for (let i = 0; i <= 360; i += 10) {
         <Search goToPoint = {goToPoint}/>
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
       </div>
-      <div className = 'logo'>
-        <img src={img}/>
-      </div>
 
         
       
