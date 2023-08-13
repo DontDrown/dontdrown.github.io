@@ -28,6 +28,7 @@ const Search = ({ goToPoint }) =>
   const [value, setValue] = useState();
   const [searchValue, setSearchValue] = useState();
 
+  const [previousValue, setPreviousValue] = useState();
   const [entries, setEntries] = useState([]);
 
   const debouncedRequest = useDebounce(() => 
@@ -55,6 +56,8 @@ const Search = ({ goToPoint }) =>
 
           if(aucklandResults.length > 0)
               setEntries(aucklandResults);
+          else if(!value.startsWith(previousValue))
+              setEntries([]);
         }
       })
       .catch((err) =>
@@ -64,17 +67,18 @@ const Search = ({ goToPoint }) =>
 
   const inputChangeHandler = (event) =>
   {
-    const value = event.target.value;
-    setValue(value);
+    setPreviousValue(value);
+    const eventValue = event.target.value;
+    setValue(eventValue);
 
-    if(value === null || value.length == 0)
+    if(eventValue === null || eventValue.length == 0)
     {
         setSearchValue("");
         setEntries([]);
     }
     else
     {
-        setSearchValue(value);
+        setSearchValue(eventValue);
         debouncedRequest();
     }
   };
