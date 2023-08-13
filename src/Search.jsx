@@ -30,6 +30,7 @@ const Search = ({ goToPoint }) =>
 
   const [previousValue, setPreviousValue] = useState();
   const [entries, setEntries] = useState([]);
+  const [markerDropped, setMarkerDropped] = useState(false);
 
   const debouncedRequest = useDebounce(() => 
   {
