@@ -109,4 +109,19 @@
 }
 
 
+.logo {
+
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 100;
+
+  width: 200px;
+  height: 200px;
+ 
+}
+
+.logo img{
+  height: 100%;
+}
 

@@ -1,6 +1,6 @@
 import './App.css'
 import React, {useState,useCallback} from 'react';
-import {Map} from 'react-map-gl';
+import {Map, Marker} from 'react-map-gl';
 
 import maplibregl from 'maplibre-gl';
 import DeckGL from '@deck.gl/react';
@@ -8,8 +8,12 @@ import {GeoJsonLayer, PolygonLayer} from '@deck.gl/layers';
 import {LightingEffect, AmbientLight, _SunLight as SunLight} from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import Search from './Search.jsx'
+import getTooltip from './getToolTip';
 import  { faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import img from './assets/logo.png'
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 
 // Source data GeoJSON
 const DATA_URL =
@@ -18,7 +22,7 @@ const DATA_URL =
 
 
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 
 const ambientLight = new AmbientLight({
   color: [255, 255, 255],
@@ -55,6 +59,7 @@ fetch(DATA_URL)
 });
 
 
+
 function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
   const [effects] = useState(() => {
     const lightingEffect = new LightingEffect({ambientLight, dirLight});
@@ -74,8 +79,10 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     bearing: 0
   });
 
+  const [markerPos,setMarkerPos] = useState(null)
+
   const goToPoint = useCallback((lat,lon) => {
-    console.log("lat " + lat + " lon " +lon)
+    setMarkerPos({longitude:lon,latitude:lat})
     setViewState({...viewState,
       longitude: lon,
       latitude: lat,
@@ -92,6 +99,8 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     }
   }
 
+  
+
   const layers = [
     // only needed when using shadows - a plane for shadows to drop on
     new PolygonLayer({
@@ -104,16 +113,16 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     new GeoJsonLayer({
       id: 'geojson',
       data,
-      opacity: 1,
+      opacity: .1,
       stroked: false,
       filled: true,
       extruded: true,
       wireframe: true,
       getElevation: f => 0,
-      getFillColor: [173, 216, 220],
-      getLineColor: [173, 216, 230],
+      getFillColor: [9, 255, 800],
+      getLineColor: [9, 255, 800],
       pickable: true
-    })
+    }),
   ];
 
   function getTooltip() 
@@ -226,6 +235,18 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
     }
   }
   
+  const mapboxBuildingLayer = {
+    id: "3d-buildings",
+    source: "carto",
+    "source-layer": "building",
+    type: "fill-extrusion",
+    minzoom: 0,
+    paint: {
+      "fill-extrusion-color": "rgb(245, 242, 235)",
+      "fill-extrusion-opacity": 0.4,
+      "fill-extrusion-height": ["get", "render_height"],
+    },
+  };
 
   return (
     <>
@@ -240,6 +261,9 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
         </div>
         <Search goToPoint = {goToPoint}/>
         <button title="Go to Current Location" className = "locateButton" onClick={goToUserLocation}><FontAwesomeIcon icon={faLocationDot} /></button>
+      </div>
+      <div className = 'logo'>
+        <img src={img}/>
       </div>
 
         
@@ -259,7 +283,16 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
 
       >
         
-        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false}/>
+        <Map reuseMaps mapLib={maplibregl} mapStyle={mapStyle} preventStyleDiffing={true} controller={false} 
+        onLoad={(e) => {
+          e.target.addLayer(mapboxBuildingLayer);
+        }}>
+          <Marker latitude ={ -36.8509} longitude = {174.7645}><h1>safs</h1></Marker>
+       
+    
+          { (markerPos != null) ? <Marker longitude={markerPos.longitude} latitude={markerPos.latitude}><h1>asfs</h1></Marker>:<></>}
+        </Map>
+      
       </DeckGL>
     </>
   );
