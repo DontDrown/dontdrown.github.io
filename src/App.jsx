@@ -22,7 +22,7 @@ const DATA_URL =
 
 
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+const MAP_STYLE =  'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
 const ambientLight = new AmbientLight({
   color: [255, 255, 255],
