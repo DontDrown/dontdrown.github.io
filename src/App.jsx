@@ -269,7 +269,7 @@ function App({data = DATA_URL, mapStyle = MAP_STYLE}) {
       <InfoModal modalState = {modalState} setModalState ={setModalState}/>
       <div className ='searchBarContainer'>
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle BtnGray" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+          <button class=" dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" onClick={()=>setModalState('prepare')}>Flood Preperation</a>
               <a class="dropdown-item" onClick={()=>setModalState('contact')}>Contact Emergency Services</a>
