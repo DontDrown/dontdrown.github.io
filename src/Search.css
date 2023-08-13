@@ -2,6 +2,9 @@
 {
   background-color: white;
   border: solid 3px white;
+  justify-content: flex-start;
+  text-align: left;
+  border-top: 1px black solid;
 
 }
 
