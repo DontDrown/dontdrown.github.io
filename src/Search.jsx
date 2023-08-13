@@ -21,7 +21,7 @@ const useDebounce = (callback) => {
   };
 
 
-const AUTOCOMPLETE_API_ACCESS_TOKEN = "8fb3d500fc324fb8b14685bde781a1ef";
+const AUTOCOMPLETE_API_ACCESS_TOKEN = "087238e19d1d434aa8f009865427f22f";
 
 const Search = ({ goToPoint }) =>
 {
